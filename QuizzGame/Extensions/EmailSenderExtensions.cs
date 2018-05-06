@@ -5,7 +5,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using QuizzGame.Services;
 
-namespace QuizzGame.Extensions
+namespace QuizzGame.Services
 {
     public static class EmailSenderExtensions
     {

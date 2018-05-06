@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using QuizzGame.Controllers;
 
-namespace QuizzGame.Extensions
+namespace Microsoft.AspNetCore.Mvc
 {
     public static class UrlHelperExtensions
     {
