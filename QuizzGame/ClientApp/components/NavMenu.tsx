@@ -34,12 +34,12 @@ export class NavMenu extends React.Component<{}, {}> {
                         </li>
                         <li>
                             <NavLink to={'/playquizz'} activeClassName='active'>
-                                <span className='glyphicon glyphicon-th-list'></span> Play Quizz
+                                <span className='glyphicon glyphicon-play'></span> Play Quizz
                             </NavLink>
                         </li>
                         <li>
                             <NavLink to={'/managequestions'} activeClassName='active'>
-                                <span className='glyphicon glyphicon-th-list'></span> Manage questions
+                                <span className='glyphicon glyphicon-transfer'></span> Manage questions
                             </NavLink>
                         </li>
 

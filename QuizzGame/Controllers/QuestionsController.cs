@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizzGame.Data;
 using QuizzGame.Models;
+using QuizzGame.Models.ViewModel;
 
 namespace QuizzGame.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Questions")]
+    //[Route("api/Questions")]
     public class QuestionsController : Controller
     {
         private readonly QuizzGameContext _context;
@@ -21,14 +22,45 @@ namespace QuizzGame.Controllers
             _context = context;
         }
 
+        // GET: api/Questions/Count
+        [Route("api/Questions/Count")]
+        [HttpGet]
+        public int GetCountQuestions()
+        {
+            int nrOfQuestions = _context.Questions.Count();
+            return nrOfQuestions;
+        }
+
         // GET: api/Questions
+        [Route("api/GetQuestions")]
         [HttpGet]
         public IEnumerable<Question> GetQuestions()
         {
             return _context.Questions;
         }
 
-        // GET: api/Questions/5
+        // GET: api/GetQuestionInfo/1
+        [Route("api/GetQuestionInfo")]
+        //[HttpGet("{id}")]
+        [HttpGet]
+        public QuestionViewModel GetQuestionInfo(int id)
+        {
+            Question q = _context.Questions.SingleOrDefault(m => m.Id == id);
+                         
+            QuestionViewModel question = new QuestionViewModel()
+            {
+                QuizzEng = q.QuizzEng,
+                QuizzSwe = q.QuizzSwe,
+                Correct = q.Correct,
+                Score = q.Score
+
+            };
+
+           return question;
+        }
+
+        // GET: api/GetQuestion/5
+        [Route("api/GetQuestion")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetQuestion([FromRoute] int id)
         {
@@ -47,7 +79,9 @@ namespace QuizzGame.Controllers
             return Ok(question);
         }
 
+     
         // PUT: api/Questions/5
+        //[Route("api/Questions/Modify")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuestion([FromRoute] int id, [FromBody] Question question)
         {
@@ -82,24 +116,47 @@ namespace QuizzGame.Controllers
             return NoContent();
         }
 
-        // POST: api/Questions
-        [HttpPost]
-        public async Task<IActionResult> PostQuestion([FromBody] Question question)
+        // GET: api/Questions
+        [Route("api/Questions/Add")]
+        [HttpGet]
+        public async Task<IActionResult> PostQuestion(string NewQuestionEng, string NewQuestionSwe, bool NewCorrect, int NewScore)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Questions.Add(question);
-            await _context.SaveChangesAsync();
+            Question question = new Question()
+            {
+                QuizzEng = NewQuestionEng,
+                QuizzSwe = NewQuestionSwe,
+                Correct = NewCorrect,
+                Score = NewScore
+            };
 
-            return CreatedAtAction("GetQuestion", new { id = question.Id }, question);
+         
+            try
+            {
+                _context.Questions.Add(question);
+                await _context.SaveChangesAsync();
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Message: " + ex);
+            }
+
+
+            return Ok(question);
         }
 
         // DELETE: api/Questions/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteQuestion([FromRoute] int id)
+     
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteQuestion([FromRoute] int id)
+        [Route("api/Questions/Delete")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteQuestion(int id)
         {
             if (!ModelState.IsValid)
             {
