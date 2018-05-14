@@ -1,4 +1,6 @@
 // Johan Lång
+//     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
@@ -13,7 +15,10 @@ interface IPlayQuizzState {
     actualQuestionScore: number;
     actualQuestionCorrect: boolean;
     actualAnswer: boolean;
+    theAnswer: string;
+    answerMessage: string;
     countQuestion: number;
+    totalScore: number;
     hasFetchedData: boolean;
 }
 
@@ -28,19 +33,25 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             actualQuestionScore: 0,
             actualQuestionCorrect: false,
             actualAnswer: false,
+            theAnswer: "",
+            answerMessage: "",
             countQuestion: 1,
+            totalScore: 0,
             hasFetchedData: false
         };
 
         this.startQuizzGame = this.startQuizzGame.bind(this);
+        this.answerTrue = this.answerTrue.bind(this);
+        this.answerFalse = this.answerFalse.bind(this);
         this.handleQuizzQuestion = this.handleQuizzQuestion.bind(this);
     }
 
     public render() {
 
         return <div>
-            <div className="page-header">
+            <div className="jumbotron">
                 <h1>Play QuizzGame</h1>
+                <p>Select true or false from the quizz questions..</p>
             </div>
             <br />
             Click here to start QuizzGame:
@@ -54,12 +65,15 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                 Question {this.state.countQuestion - 1} ({this.state.totalNrOfQuestions}):
                 <br />
                 <br />
-                {this.state.actualQuestion} ({this.state.actualQuestionScore} p)
+                {this.state.actualQuestion} ({this.state.actualQuestionScore} p Corretc answer is: {this.state.actualQuestionCorrect})
                 <br />
                 <br />
-                <pre><input type="checkbox" name="answearTrue" value="True" onClick={this.handleQuizzQuestion} />True  <input type="checkbox" name="answearFalse" value="False" />False </pre>
+                <pre><input type="checkbox" disabled={!this.state.startTrue} onChange={this.answerTrue} /> True  <input type="checkbox" disabled={!this.state.startTrue} onClick={this.answerFalse} /> False </pre>
                 <br />
-                The answer was: {this.state.actualAnswer}
+                Your answer was: {this.state.theAnswer}, It's {this.state.answerMessage}, Counter value: {this.state.countQuestion.toString()}
+                <br />
+                <br />
+                Total score: {this.state.totalScore}
                 <br />
                 <br />
 
@@ -70,10 +84,6 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                 <br />
                 <button className="btn btn-warning" disabled={!this.state.startTrue}><i className="glyphicon glyphicon-remove"></i> Cancel</button>
             </div>
-
-
-
-
         </div>;
     }
 
@@ -84,6 +94,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             startTrue: true
         })
 
+        
         fetch('api/Questions/Count')
 
             .then(data => {
@@ -98,13 +109,38 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                 });
                 console.log('Get json: ', json);
 
-            })
+            })            
+
+        // this.handleQuizzQuestion(1);
+    }
+
+    answerTrue(event: any) {
+
+        this.setState({
+            theAnswer: "True"
+        })
+    }
+
+    answerFalse(event: any) {
+
+        this.setState({
+            theAnswer: "False"
+        })
     }
 
     handleQuizzQuestion(event: any) {
 
-        fetch('api/GetQuestion/' + this.state.countQuestion)
-            .then(data => {
+        /*
+        
+        fetch('api/GetQuestionInfo?currentId=' + this.state.countQuestion)
+            .then(response => {
+                response.text().then(text => console.log(`Received text from server: "${text}"`));
+            });
+
+*/
+        
+        fetch('api/GetQuestionInfo?currentId=' + this.state.countQuestion)
+          .then(data => {
                 console.log('Get Qustion Info: ', data);
                 return data.json();
             })
@@ -113,12 +149,24 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                     actualQuestion: json.quizzEng,
                     actualQuestionScore: json.score,
                     actualQuestionCorrect: json.correct,
-                    actualAnswer: false,
                     hasFetchedData: true,
                     countQuestion: this.state.countQuestion + 1
+
                 });
                 console.log('Get Question info json: ', json);
             })
+
+        if (this.state.theAnswer == "True") {
+                this.setState({
+                    answerMessage: "Correct!"
+                })
+            }
+            else if (this.state.theAnswer == "False") {
+                this.setState({
+                    answerMessage: "Not correct!"
+                })
+            }
+        
     }
 
     componentDidMount() {

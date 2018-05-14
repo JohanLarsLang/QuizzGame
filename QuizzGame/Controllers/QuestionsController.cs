@@ -41,12 +41,14 @@ namespace QuizzGame.Controllers
 
         // GET: api/GetQuestionInfo/1
         [Route("api/GetQuestionInfo")]
-        //[HttpGet("{id}")]
         [HttpGet]
-        public QuestionViewModel GetQuestionInfo(int id)
+        public async Task<QuestionViewModel> GetQuestionInfo(int currentId)
         {
-            Question q = _context.Questions.SingleOrDefault(m => m.Id == id);
-                         
+
+           // var q = _context.Questions.First();
+
+           var q = await _context.Questions.SingleOrDefaultAsync(m => m.Id ==currentId);
+
             QuestionViewModel question = new QuestionViewModel()
             {
                 QuizzEng = q.QuizzEng,
@@ -56,7 +58,7 @@ namespace QuizzGame.Controllers
 
             };
 
-           return question;
+            return question;
         }
 
         // GET: api/GetQuestion/5
@@ -79,7 +81,7 @@ namespace QuizzGame.Controllers
             return Ok(question);
         }
 
-     
+
         // PUT: api/Questions/5
         //[Route("api/Questions/Modify")]
         [HttpPut("{id}")]
@@ -116,7 +118,8 @@ namespace QuizzGame.Controllers
             return NoContent();
         }
 
-        // GET: api/Questions
+        // ADD:
+
         [Route("api/Questions/Add")]
         [HttpGet]
         public async Task<IActionResult> PostQuestion(string NewQuestionEng, string NewQuestionSwe, bool NewCorrect, int NewScore)
@@ -134,14 +137,14 @@ namespace QuizzGame.Controllers
                 Score = NewScore
             };
 
-         
+
             try
             {
                 _context.Questions.Add(question);
                 await _context.SaveChangesAsync();
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Message: " + ex);
             }
@@ -150,27 +153,75 @@ namespace QuizzGame.Controllers
             return Ok(question);
         }
 
-        // DELETE: api/Questions/5
-     
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteQuestion([FromRoute] int id)
-        [Route("api/Questions/Delete")]
-        [HttpDelete]
-        public async Task<IActionResult> DeleteQuestion(int id)
+        // MODIFY:
+
+        [Route("api/Questions/Modify")]
+        [HttpGet]
+        public async Task<IActionResult> ModifyQuestion(int actualId, string NewQuestionEng, string NewQuestionSwe, bool NewCorrect, int NewScore)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var question = await _context.Questions.SingleOrDefaultAsync(m => m.Id == id);
+            var question = await _context.Questions.SingleOrDefaultAsync(m => m.Id == actualId);
+
             if (question == null)
             {
                 return NotFound();
             }
 
-            _context.Questions.Remove(question);
-            await _context.SaveChangesAsync();
+            question.QuizzEng = NewQuestionEng;
+            question.QuizzSwe = NewQuestionSwe;
+            question.Correct = NewCorrect;
+            question.Score = NewScore;
+                     
+
+            try
+            {
+                //_context.Questions.Remove(question);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Message: " + ex);
+            }
+
+
+            return Ok(question);
+        }
+
+
+        // DELETE:
+
+        [Route("api/Questions/Delete")]
+        [HttpGet]
+        public async Task<IActionResult> DeleteQuestion(int actualId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var question = await _context.Questions.SingleOrDefaultAsync(m => m.Id == actualId);
+
+            if (question == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _context.Questions.Remove(question);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Message: " + ex);
+            }
+          
 
             return Ok(question);
         }

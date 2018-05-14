@@ -67,8 +67,8 @@ namespace QuizzGame
 
                     var context = serviceScope.ServiceProvider.GetService<QuizzGameContext>();
 
-                   // context.Database.EnsureDeleted();
-                   // context.Database.Migrate();
+                    context.Database.EnsureDeleted();
+                    context.Database.Migrate();
 
                     if (!context.Questions.Any())
                     {
