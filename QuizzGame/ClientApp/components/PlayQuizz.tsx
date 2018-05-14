@@ -1,4 +1,5 @@
 // Johan Lång
+//import '/css/style.css';
 //     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
 
 import * as React from 'react';
@@ -9,16 +10,20 @@ interface IPlayQuizzProps {
 }
 
 interface IPlayQuizzState {
+    totalScore: number;
     totalNrOfQuestions: number;
     startTrue: boolean;
     actualQuestion: string;
     actualQuestionScore: number;
     actualQuestionCorrect: boolean;
+    chkbox: boolean;
     actualAnswer: boolean;
-    theAnswer: string;
+    setAnswer: boolean;
     answerMessage: string;
     countQuestion: number;
-    totalScore: number;
+    nextQuestion: boolean,
+    cancelQuestion: boolean;
+    resultMessage: string;
     hasFetchedData: boolean;
 }
 
@@ -27,16 +32,20 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
     public constructor(props: RouteComponentProps<IPlayQuizzProps>) {
         super(props);
         this.state = {
+            totalScore: 0,
             totalNrOfQuestions: 0,
             startTrue: false,
             actualQuestion: "",
             actualQuestionScore: 0,
             actualQuestionCorrect: false,
+            chkbox: false,
             actualAnswer: false,
-            theAnswer: "",
+            setAnswer: false,
             answerMessage: "",
             countQuestion: 1,
-            totalScore: 0,
+            nextQuestion: false,
+            cancelQuestion: false,
+            resultMessage: "",
             hasFetchedData: false
         };
 
@@ -44,17 +53,19 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
         this.answerTrue = this.answerTrue.bind(this);
         this.answerFalse = this.answerFalse.bind(this);
         this.handleQuizzQuestion = this.handleQuizzQuestion.bind(this);
+        this.cancelGame = this.cancelGame.bind(this);
+        this.gameComplete = this.gameComplete.bind(this);
     }
 
     public render() {
 
         return <div>
             <div className="jumbotron">
-                <h1>Play QuizzGame</h1>
-                <p>Select true or false from the quizz questions..</p>
+                <h1>Play Quizz Game</h1>
+                <p>Select True or False for the quizz questions..</p>
             </div>
             <br />
-            Click here to start QuizzGame:
+            Click here to start Quizz Game:
             <br />
             <button className="btn btn-primary" disabled={this.state.startTrue} onClick={this.startQuizzGame}><i className="glyphicon glyphicon-play-circle"></i> Start Quizz Game</button>
             <br />
@@ -62,27 +73,30 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
 
             <div className="NewQuestion">
                 <br />
-                Question {this.state.countQuestion - 1} ({this.state.totalNrOfQuestions}):
+                Question {this.state.countQuestion} ({this.state.totalNrOfQuestions}):
                 <br />
                 <br />
-                {this.state.actualQuestion} ({this.state.actualQuestionScore} p Corretc answer is: {this.state.actualQuestionCorrect})
+                {this.state.actualQuestion} ({this.state.actualQuestionScore} p)
                 <br />
                 <br />
-                <pre><input type="checkbox" disabled={!this.state.startTrue} onChange={this.answerTrue} /> True  <input type="checkbox" disabled={!this.state.startTrue} onClick={this.answerFalse} /> False </pre>
+                <pre>
+                    <input type="checkbox" checked={this.state.chkbox} disabled={!this.state.setAnswer} onChange={this.answerTrue} /> True  <input type="checkbox" checked={this.state.chkbox} disabled={!this.state.setAnswer} onClick={this.answerFalse} /> False
+                </pre>
                 <br />
-                Your answer was: {this.state.theAnswer}, It's {this.state.answerMessage}, Counter value: {this.state.countQuestion.toString()}
+                Your answer: {this.state.answerMessage}
                 <br />
                 <br />
                 Total score: {this.state.totalScore}
                 <br />
                 <br />
 
-                Click here for next question:
+                Click here for next question or cancel:
                  <br />
-                <button className="btn btn-primary" disabled={!this.state.startTrue} onClick={this.handleQuizzQuestion}><i className="glyphicon glyphicon-forward"></i> Next Question</button>
+                <br />
+                <button className="btn btn-primary" disabled={!this.state.nextQuestion} onClick={this.handleQuizzQuestion}><i className="glyphicon glyphicon-forward"></i> Next Question</button> <button className="btn btn-warning" disabled={!this.state.cancelQuestion} onClick={this.cancelGame}><i className="glyphicon glyphicon-remove"></i> Cancel</button>
                 <br />
                 <br />
-                <button className="btn btn-warning" disabled={!this.state.startTrue}><i className="glyphicon glyphicon-remove"></i> Cancel</button>
+                {this.state.resultMessage}
             </div>
         </div>;
     }
@@ -91,10 +105,14 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
     startQuizzGame(event: any) {
 
         this.setState({
-            startTrue: true
+            countQuestion: 1,
+            cancelQuestion: true,
+            startTrue: true,
+            setAnswer: true,
+            resultMessage: ""
         })
 
-        
+
         fetch('api/Questions/Count')
 
             .then(data => {
@@ -109,38 +127,96 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                 });
                 console.log('Get json: ', json);
 
-            })            
+            })
 
-        // this.handleQuizzQuestion(1);
+        this.handleQuizzQuestion(1);
     }
 
     answerTrue(event: any) {
 
         this.setState({
-            theAnswer: "True"
+            setAnswer: false,
+            actualAnswer: true
+
         })
+
+        if (!this.state.actualAnswer && this.state.actualQuestionCorrect) {
+            this.setState({
+                answerMessage: "It's Correct!",
+                totalScore: this.state.totalScore + this.state.actualQuestionScore,
+                hasFetchedData: false
+            })
+         }
+        else {
+            this.setState({
+                answerMessage: "It is not correct!"
+            })
+        }
+
+        if (this.state.countQuestion > this.state.totalNrOfQuestions) {
+            this.gameComplete();
+        }
+
+        if (this.state.countQuestion == this.state.totalNrOfQuestions) {
+            this.gameComplete();
+        }
+        else {
+            this.setState({
+                nextQuestion: true,
+                countQuestion: this.state.countQuestion + 1
+            })
+        }
+
     }
 
     answerFalse(event: any) {
 
         this.setState({
-            theAnswer: "False"
+            setAnswer: false,
+            actualAnswer: false
         })
-    }
+
+        if (this.state.actualAnswer && !this.state.actualQuestionCorrect) {
+            this.setState({
+                answerMessage: "It's Correct!",
+                totalScore: this.state.totalScore + this.state.actualQuestionScore,
+                hasFetchedData: false
+            })
+        }
+        else {
+            this.setState({
+                answerMessage: "It is not correct!"
+            })
+        }
+
+        if (this.state.countQuestion == this.state.totalNrOfQuestions) {
+            this.gameComplete();
+        }
+        else {
+            this.setState({
+                nextQuestion: true,
+                countQuestion: this.state.countQuestion + 1
+            })
+        }
+     }
 
     handleQuizzQuestion(event: any) {
 
-        /*
-        
-        fetch('api/GetQuestionInfo?currentId=' + this.state.countQuestion)
+ /*
+                fetch('api/GetQuestionInfo?currentId=' + this.state.countQuestion)
             .then(response => {
                 response.text().then(text => console.log(`Received text from server: "${text}"`));
             });
-
 */
-        
+
+        this.setState({
+            answerMessage: "",
+            setAnswer: true,
+            chkbox: false
+        })
+
         fetch('api/GetQuestionInfo?currentId=' + this.state.countQuestion)
-          .then(data => {
+            .then(data => {
                 console.log('Get Qustion Info: ', data);
                 return data.json();
             })
@@ -150,23 +226,42 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                     actualQuestionScore: json.score,
                     actualQuestionCorrect: json.correct,
                     hasFetchedData: true,
-                    countQuestion: this.state.countQuestion + 1
-
                 });
                 console.log('Get Question info json: ', json);
             })
 
-        if (this.state.theAnswer == "True") {
-                this.setState({
-                    answerMessage: "Correct!"
-                })
-            }
-            else if (this.state.theAnswer == "False") {
-                this.setState({
-                    answerMessage: "Not correct!"
-                })
-            }
-        
+        this.setState({
+            nextQuestion: false
+        })
+         
+    }
+
+    cancelGame(event: any) {
+
+        this.setState({
+            startTrue: false,
+            countQuestion: 1,
+            actualQuestion: "",
+            totalScore: 0,
+            answerMessage: "",
+            setAnswer: false,
+            chkbox: false,
+            nextQuestion: false,
+            actualQuestionScore: 0,
+            cancelQuestion: false
+        })
+
+    }
+
+    gameComplete() {
+
+        this.setState({
+            startTrue: false,
+            cancelQuestion: false,
+            resultMessage: "Congratulations! You got: " + this.state.totalScore + " score!. Press Start Quizz Game to play again..."
+
+        })
+
     }
 
     componentDidMount() {

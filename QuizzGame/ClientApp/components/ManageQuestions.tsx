@@ -1,9 +1,7 @@
 //Johan Lång
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-//import '/css/style.css';
 
-//const styles = require<any>("./css/style.css");
 
 interface IManageQuestionProps {
 }
@@ -51,7 +49,8 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
                 <h1>Manage questions</h1>
                 <p>Add, modify and delete questions...</p>
             </div>
-              <div className="manageQuestions">
+
+              <div>
                 <input type="text" id="newQustionEng" placeholder="New question in English..."
                     value={this.state.newQuestionEng} onChange={event => this.setState({ newQuestionEng: event.target.value })} />
                 <br />
