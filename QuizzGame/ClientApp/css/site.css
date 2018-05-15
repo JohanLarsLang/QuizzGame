@@ -1,6 +1,12 @@
 body {
-    /*background: url(../img/background-colors.png); */
+    background: url(../img/paper.jpg);
     background-color: lightblue;
+    font-size: 16px;
+    font-family: Calibri;
+}
+
+.list{
+    font-weight: bold;
 }
 
 .btn-primary:hover{
@@ -14,6 +20,72 @@ body {
 .btn-warning:hover {
     background-color: red;
 }
+
+a:hover {
+    color: whitesmoke;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.welcome {
+    color: darkblue;
+    position: absolute;
+    width: auto;
+    height: 50px;
+    top: 25%;
+    left: 30%;
+    margin-left: -50px; /* margin is -0.5 * dimension */
+    margin-top: 25px;
+    font-weight: normal;
+    font-family: 'Comic Sans MS';
+}
+
+    .welcome a {
+        color: #807c7c;
+        text-decoration: none;
+        padding: 0 10px;
+        font-size: 1.6em;
+        text-transform: uppercase;
+        -moz-transition: 3s all;
+        -webkit-transition: 3s all;
+        -o-transition: 3s all;
+        transition: 3s all;
+    }
+
+        .welcome a:hover, .welcome h2:hover {
+            color: darkred;
+            -moz-transition: 1s 1s color, 2s letter-spacing, 2s margin-left, 1s font-size ease;
+            -webkit-transition: 1s 1s color, 2s letter-spacing, 2s margin-left, 1s font-size ease;
+            -o-transition: 1s 1s color, 2s letter-spacing, 2s margin-left, 1s font-size ease;
+            transition: 1s 1s color, 2s letter-spacing, 4s margin-left, 1s font-size ease;
+            letter-spacing: .3em;
+            margin-left: 40px;
+            font-size: 2.6em;
+        }
+
+    .welcome span.additional {
+        opacity: 0;
+        display: block;
+        color: orange;
+        text-shadow: 1px 1px white;
+        font-size: 1.8em;
+        font-style: italic;
+        position: relative;
+        line-height: 1.2em;
+        -moz-transition: 3s all;
+        -webkit-transition: 3s all;
+        -o-transition: 3s all;
+        transition: 3s all;
+    }
+
+
+    .welcome a:hover + span.additional, .welcome h2:hover + span.additional {
+        opacity: 1;
+        -moz-transition: 3s opacity;
+        -webkit-transition: 3s opacity;
+        -o-transition: 3s opacity;
+        transition: 3s opacity;
+    }
 
 .main-nav li .glyphicon {
     margin-right: 10px;

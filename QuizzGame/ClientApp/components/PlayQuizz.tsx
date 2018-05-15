@@ -135,6 +135,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
     answerTrue(event: any) {
 
         this.setState({
+            hasFetchedData: false,
             setAnswer: false,
             actualAnswer: true
 
@@ -143,10 +144,9 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
         if (!this.state.actualAnswer && this.state.actualQuestionCorrect) {
             this.setState({
                 answerMessage: "It's Correct!",
-                totalScore: this.state.totalScore + this.state.actualQuestionScore,
-                hasFetchedData: false
+                totalScore: this.state.totalScore + this.state.actualQuestionScore
             })
-         }
+        }
         else {
             this.setState({
                 answerMessage: "It is not correct!"
@@ -172,6 +172,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
     answerFalse(event: any) {
 
         this.setState({
+            hasFetchedData: false,
             setAnswer: false,
             actualAnswer: false
         })
@@ -179,8 +180,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
         if (this.state.actualAnswer && !this.state.actualQuestionCorrect) {
             this.setState({
                 answerMessage: "It's Correct!",
-                totalScore: this.state.totalScore + this.state.actualQuestionScore,
-                hasFetchedData: false
+                totalScore: this.state.totalScore + this.state.actualQuestionScore
             })
         }
         else {
@@ -198,16 +198,16 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                 countQuestion: this.state.countQuestion + 1
             })
         }
-     }
+    }
 
     handleQuizzQuestion(event: any) {
 
- /*
-                fetch('api/GetQuestionInfo?currentId=' + this.state.countQuestion)
-            .then(response => {
-                response.text().then(text => console.log(`Received text from server: "${text}"`));
-            });
-*/
+        /*
+                       fetch('api/GetQuestionInfo?currentId=' + this.state.countQuestion)
+                   .then(response => {
+                       response.text().then(text => console.log(`Received text from server: "${text}"`));
+                   });
+       */
 
         this.setState({
             answerMessage: "",
@@ -222,18 +222,30 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             })
             .then(json => {
                 this.setState({
+                    hasFetchedData: true,
                     actualQuestion: json.quizzEng,
                     actualQuestionScore: json.score,
                     actualQuestionCorrect: json.correct,
-                    hasFetchedData: true,
+         
                 });
                 console.log('Get Question info json: ', json);
             })
-
+          
         this.setState({
+
             nextQuestion: false
         })
-         
+
+        /*
+
+        if (!this.state.hasFetchedData) {
+            this.setState({
+                countQuestion: this.state.countQuestion + 1
+            });
+
+            this.handleQuizzQuestion(1);
+        }
+        */
     }
 
     cancelGame(event: any) {

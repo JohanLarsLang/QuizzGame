@@ -28,6 +28,13 @@ export class NavMenu extends React.Component<{}, {}> {
                                 <span className='glyphicon glyphicon-play'></span> Play Quizz
                             </NavLink>
                         </li>
+
+                        <li>
+                            <NavLink to={'/highscore'} activeClassName='active'>
+                                <span className='glyphicon glyphicon-star'></span> Highscore
+                            </NavLink>
+                        </li>
+
                         <li>
                             <NavLink to={'/managequestions'} activeClassName='active'>
                                 <span className='glyphicon glyphicon-transfer'></span> Manage questions

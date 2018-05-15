@@ -27,7 +27,7 @@ namespace QuizzGame.Controllers
         [HttpGet]
         public int GetCountQuestions()
         {
-            int nrOfQuestions = _context.Questions.Count();
+            int nrOfQuestions = _context.Questions.Last().Id;
             return nrOfQuestions;
         }
 
@@ -39,7 +39,7 @@ namespace QuizzGame.Controllers
             return _context.Questions;
         }
 
-        // GET: api/GetQuestionInfo/1
+        // GET: 
         [Route("api/GetQuestionInfo")]
         [HttpGet]
         public async Task<QuestionViewModel> GetQuestionInfo(int currentId)

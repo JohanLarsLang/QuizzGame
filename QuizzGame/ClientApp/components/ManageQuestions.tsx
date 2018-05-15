@@ -15,9 +15,19 @@ interface IManageQuestionState {
     actualId: number;
     statusOk: boolean;
     statusMessage: string;
+    question: questionInfo[];
     allQuestionInfo: string;
     countQuestion: number;
     hasFetchedData: boolean;
+}
+
+interface questionInfo {
+    id: number;
+    quizzEng: string;
+    quizzSwe: string;
+    correct: boolean;
+    score: number;
+
 }
 
 
@@ -33,6 +43,7 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
             actualId: 0,
             statusOk: false,
             statusMessage: "",
+            question: [],
             allQuestionInfo: "",
             countQuestion: 1,
             hasFetchedData: false
@@ -44,13 +55,18 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
         this.showAllQuestions = this.showAllQuestions.bind(this);
     }
     public render() {
+        let question = this.state.question;
+        let oldlist = question.map(q => q.id + ', ' + q.quizzEng + ', ' + q.quizzSwe + ', ' + q.correct + ', ' + q.score);
+        let list = oldlist.map((x, index) =>
+            <li key={x + ':' + index}>{x}</li>);
+
         return <div className="managePage">
             <div className="jumbotron">
                 <h1>Manage questions</h1>
                 <p>Add, modify and delete questions...</p>
             </div>
 
-              <div>
+            <div>
                 <input type="text" id="newQustionEng" placeholder="New question in English..."
                     value={this.state.newQuestionEng} onChange={event => this.setState({ newQuestionEng: event.target.value })} />
                 <br />
@@ -84,7 +100,11 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
                 <br />
                 <div>
                     <br />
+                    <div className="list">
                     {this.state.allQuestionInfo}
+                        <ul>{list}</ul>
+                        </div>
+
                 </div>
 
             </div>
@@ -93,7 +113,7 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
     }
 
     addNewQuestion(event: any) {
-        
+
         fetch(`api/Questions/Add?newQuestionEng=${this.state.newQuestionEng}&newQuestionSwe=${this.state.newQuestionSwe}&newCorrect=${this.state.newCorrect.toString()}&newScore=${this.state.newScore.toString()}`)
 
             .then(data => {
@@ -116,7 +136,11 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
 
     modifyQuestion(event: any) {
 
-        fetch('api/Questions/Modify?actualId=' + this.state.actualId + '&newQuestionEng=' + this.state.newQuestionEng + '&newQuestionSwe=' + this.state.newQuestionSwe +'&newCorrect=' + this.state.newCorrect + '&newScore=' + this.state.newScore )
+        this.setState({
+            hasFetchedData: false
+        });
+
+        fetch('api/Questions/Modify?actualId=' + this.state.actualId + '&newQuestionEng=' + this.state.newQuestionEng + '&newQuestionSwe=' + this.state.newQuestionSwe + '&newCorrect=' + this.state.newCorrect + '&newScore=' + this.state.newScore)
 
             .then(data => {
                 console.log('Modify Qustion: ', data);
@@ -129,23 +153,27 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
             })
 
             .then(json => {
-                if (this.state.statusOk) {
-                    this.setState({
-                        statusMessage: 'Status message:  Question id: ' + json.id + ' successfully modified'
-                    });
-                }
-                else {
-                    this.setState({
-                        statusMessage: 'Status message:  Question id does not exist!'
-                    });
-                }
                 console.log('Modify Question json: ', json);
+                this.setState({
+                    hasFetchedData: true,
+                    statusMessage: 'Status message:  Question id: ' + this.state.actualId + ' successfully modified'
+                });
             })
+
+        if (!this.state.hasFetchedData) {
+            this.setState({
+                statusMessage: 'Status message:  Question id does not exist!'
+            });
+        }
     }
 
 
     deleteQuestion(event: any) {
-             
+
+        this.setState({
+            hasFetchedData: false
+        });
+
         fetch('api/Questions/Delete?actualId=' + this.state.actualId)
 
             .then(data => {
@@ -155,48 +183,51 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
                     statusOk: data.ok
                 });
                 return data.json();
-                                                           
             })
-            
+
             .then(json => {
-                if (this.state.statusOk) {
-                    this.setState({
-                        statusMessage: 'Status message:  Question id: ' + json.id + ' successfully deleted'
-                    });
-                }
-                else {
-                    this.setState({
-                        statusMessage: 'Status message:  Question id does not exist!'
-                    });
-                }
                 console.log('Delete Question json: ', json);
+                this.setState({
+                    hasFetchedData: true,
+                    statusMessage: 'Status message:  Question id: ' + this.state.actualId + ' successfully deleted'
+                });
             })
+
+        if (!this.state.hasFetchedData) {
+            this.setState({
+                statusMessage: 'Status message:  Question id does not exist!'
+            });
+        }
     }
 
 
 
-    showAllQuestions(event: any) {
+    showAllQuestions() {
 
         fetch('api/GetQuestions')
 
             .then(data => {
-                console.log('Get data: ', data);
+                console.log('All Qustion Data: ', data);
                 return data.json();
-
             })
-            .then(json => {
+            .then(obj => {
                 this.setState({
-                    allQuestionInfo: json.id
-
+                    question: obj,
+                    allQuestionInfo: "Quizz: Id, QuizzEng, QuizzSwe, Correct, Score"
                 });
-                console.log('Get json: ', json);
-             })
+            })
+
+            .then(json => {
+                console.log('All Question json: ', json);
+            })
+
 
     }
 
+
     countAllQuestions(event: any) {
 
-            fetch('api/Questions/Count')
+        fetch('api/Questions/Count')
 
             .then(data => {
                 console.log('Get data: ', data);
@@ -215,5 +246,6 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
 
     componentDidMount() {
         this.countAllQuestions(1);
+        //this.showAllQuestions();
     }
 }
