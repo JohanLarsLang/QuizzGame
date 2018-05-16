@@ -60,12 +60,14 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
         let list = oldlist.map((x, index) =>
             <li key={x + ':' + index}>{x}</li>);
 
-        return <div className="managePage">
-            <div className="jumbotron">
+        return <div>
+            <header>
                 <h1>Manage questions</h1>
-                <p>Add, modify and delete questions...</p>
-            </div>
-
+            </header>
+            <br />
+            <br />
+            <p className="list">Add, modify and delete questions.....</p>
+                        
             <div>
                 <input type="text" id="newQustionEng" placeholder="New question in English..."
                     value={this.state.newQuestionEng} onChange={event => this.setState({ newQuestionEng: event.target.value })} />
