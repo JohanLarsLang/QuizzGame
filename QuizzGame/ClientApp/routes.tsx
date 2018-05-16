@@ -5,12 +5,14 @@ import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
 import { PlayQuizz } from './components/PlayQuizz';
+import { HighScore } from './components/HighScore';
 import { ManageQuestions } from './components/ManageQuestions';
 
 export const routes = <Layout>
     <Route exact path='/' component={ Home } />
     <Route path='/counter' component={ Counter } />
-    <Route path='/fetchdata' component={FetchData} />
-    <Route path='/playquizz' component={PlayQuizz} />
-    <Route path='/managequestions' component={ManageQuestions} />
+    <Route path='/fetchdata' component={ FetchData } />
+    <Route path='/playquizz' component={ PlayQuizz } />
+    <Route path='/highscore' component={ HighScore } />
+    <Route path='/managequestions' component={ ManageQuestions } />
 </Layout>;

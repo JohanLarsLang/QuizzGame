@@ -1,3 +1,112 @@
+body {
+    background: url(../img/paper.jpg);
+    font-size: 16px;
+    font-family: Calibri;
+}
+
+.list{
+    font-weight: bold;
+}
+
+.btn-primary:hover{
+    background-color: green;
+}
+
+.btn-warning {
+    background-color: darkorange;
+}
+
+.btn-warning:hover {
+    background-color: red;
+}
+
+a:hover {
+    color: royalblue;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.welcome {
+    color: royalblue;
+    font-weight: bold;
+    position: absolute;
+    width: auto;
+    height: 50px;
+    top: 25%;
+    left: 35%;
+    margin-left: -50px; /* margin is -0.5 * dimension */
+    margin-top: 25px;
+    font-family: 'Comic Sans MS';
+}
+
+    .welcome a {
+        color: royalblue;
+        font-weight: bold;
+        text-decoration: none;
+        padding: 0 10px;
+         -moz-transition: 3s all;
+        -webkit-transition: 3s all;
+        -o-transition: 3s all;
+        transition: 3s all;
+    }
+
+        .welcome a:hover {
+            color: orange;
+            -moz-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+            -webkit-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+            -o-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+            transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+            margin-left: 40px;
+            font-size: 2.6em;
+            cursor: pointer;
+        }
+
+    .welcome Navlink:hover {
+        color: orange;
+        -moz-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+        -webkit-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+        -o-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+        transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+        margin-left: 40px;
+        font-size: 2.6em;
+        cursor: pointer;
+    }
+
+    .welcome span.additional {
+        opacity: 0;
+        display: block;
+        color: orange;
+        text-shadow: 1px 1px white;
+        font-size: 1.8em;
+        font-style: italic;
+        position: relative;
+        line-height: 1.2em;
+        -moz-transition: 3s all;
+        -webkit-transition: 3s all;
+        -o-transition: 3s all;
+        transition: 3s all;
+    }
+
+
+    .welcome a:hover + span.additional, .welcome h2:hover + span.additional {
+        opacity: 1;
+        -moz-transition: 3s opacity;
+        -webkit-transition: 3s opacity;
+        -o-transition: 3s opacity;
+        transition: 3s opacity;
+    }
+
+header h1 {
+    font: bold 3em calibri;
+    line-height: 90px;
+    text-align: center;
+    color: #154360;
+    margin: 10px 10px 0px 10px;
+    padding-bottom: 20px;
+    text-shadow: 30px 30px #0066FF;
+    box-shadow: 0px 0px 50px #111;
+}
+
 .main-nav li .glyphicon {
     margin-right: 10px;
 }
@@ -33,8 +142,7 @@
         width: calc(25% - 20px);
     }
     .main-nav .navbar {
-        border-radius: 0px;
-        border-width: 0px;
+  
         height: 100%;
     }
     .main-nav .navbar-header {
@@ -42,7 +150,7 @@
     }
     .main-nav .navbar-collapse {
         border-top: 1px solid #444;
-        padding: 0px;
+
     }
     .main-nav .navbar ul {
         float: none;

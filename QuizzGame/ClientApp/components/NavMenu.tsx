@@ -12,7 +12,7 @@ export class NavMenu extends React.Component<{}, {}> {
                         <span className='icon-bar'></span>
                         <span className='icon-bar'></span>
                     </button>
-                    <Link className='navbar-brand' to={'/'}>QuizzGame</Link>
+                    <Link className='navbar-brand' to={'/'}>Quizz Game</Link>
                 </div>
                 <div className='clearfix'></div>
                 <div className='navbar-collapse collapse'>
@@ -22,24 +22,22 @@ export class NavMenu extends React.Component<{}, {}> {
                                 <span className='glyphicon glyphicon-home'></span> Home
                             </NavLink>
                         </li>
-                        <li>
-                            <NavLink to={'/counter'} activeClassName='active'>
-                                <span className='glyphicon glyphicon-education'></span> Counter
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={'/fetchdata'} activeClassName='active'>
-                                <span className='glyphicon glyphicon-th-list'></span> Fetch data
-                            </NavLink>
-                        </li>
+                        
                         <li>
                             <NavLink to={'/playquizz'} activeClassName='active'>
-                                <span className='glyphicon glyphicon-th-list'></span> Play Quizz
+                                <span className='glyphicon glyphicon-play'></span> Play Quizz
                             </NavLink>
                         </li>
+
+                        <li>
+                            <NavLink to={'/highscore'} activeClassName='active'>
+                                <span className='glyphicon glyphicon-star'></span> Highscore
+                            </NavLink>
+                        </li>
+
                         <li>
                             <NavLink to={'/managequestions'} activeClassName='active'>
-                                <span className='glyphicon glyphicon-th-list'></span> Manage questions
+                                <span className='glyphicon glyphicon-transfer'></span> Manage questions
                             </NavLink>
                         </li>
 
