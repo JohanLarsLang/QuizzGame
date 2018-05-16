@@ -60,11 +60,13 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
     public render() {
 
         return <div>
-            <div className="jumbotron">
+            <header>
                 <h1>Play Quizz Game</h1>
-                <p>Select True or False for the quizz questions..</p>
-            </div>
+            </header>
             <br />
+            <br />
+            <p className="list">Select True or False for the quizz questions..</p>
+            
             Click here to start Quizz Game:
             <br />
             <button className="btn btn-primary" disabled={this.state.startTrue} onClick={this.startQuizzGame}><i className="glyphicon glyphicon-play-circle"></i> Start Quizz Game</button>

@@ -1,6 +1,5 @@
 body {
     background: url(../img/paper.jpg);
-    background-color: lightblue;
     font-size: 16px;
     font-family: Calibri;
 }
@@ -22,46 +21,56 @@ body {
 }
 
 a:hover {
-    color: whitesmoke;
+    color: royalblue;
     text-decoration: none;
     cursor: pointer;
 }
 
 .welcome {
-    color: darkblue;
+    color: royalblue;
+    font-weight: bold;
     position: absolute;
     width: auto;
     height: 50px;
     top: 25%;
-    left: 30%;
+    left: 35%;
     margin-left: -50px; /* margin is -0.5 * dimension */
     margin-top: 25px;
-    font-weight: normal;
     font-family: 'Comic Sans MS';
 }
 
     .welcome a {
-        color: #807c7c;
+        color: royalblue;
+        font-weight: bold;
         text-decoration: none;
         padding: 0 10px;
-        font-size: 1.6em;
-        text-transform: uppercase;
-        -moz-transition: 3s all;
+         -moz-transition: 3s all;
         -webkit-transition: 3s all;
         -o-transition: 3s all;
         transition: 3s all;
     }
 
-        .welcome a:hover, .welcome h2:hover {
-            color: darkred;
-            -moz-transition: 1s 1s color, 2s letter-spacing, 2s margin-left, 1s font-size ease;
-            -webkit-transition: 1s 1s color, 2s letter-spacing, 2s margin-left, 1s font-size ease;
-            -o-transition: 1s 1s color, 2s letter-spacing, 2s margin-left, 1s font-size ease;
-            transition: 1s 1s color, 2s letter-spacing, 4s margin-left, 1s font-size ease;
-            letter-spacing: .3em;
+        .welcome a:hover {
+            color: orange;
+            -moz-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+            -webkit-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+            -o-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+            transition: 3s 1s color, 4s margin-left, 1s font-size ease;
             margin-left: 40px;
             font-size: 2.6em;
+            cursor: pointer;
         }
+
+    .welcome Navlink:hover {
+        color: orange;
+        -moz-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+        -webkit-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+        -o-transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+        transition: 3s 1s color, 4s margin-left, 1s font-size ease;
+        margin-left: 40px;
+        font-size: 2.6em;
+        cursor: pointer;
+    }
 
     .welcome span.additional {
         opacity: 0;
@@ -86,6 +95,17 @@ a:hover {
         -o-transition: 3s opacity;
         transition: 3s opacity;
     }
+
+header h1 {
+    font: bold 3em calibri;
+    line-height: 90px;
+    text-align: center;
+    color: #154360;
+    margin: 10px 10px 0px 10px;
+    padding-bottom: 20px;
+    text-shadow: 30px 30px #0066FF;
+    box-shadow: 0px 0px 50px #111;
+}
 
 .main-nav li .glyphicon {
     margin-right: 10px;
