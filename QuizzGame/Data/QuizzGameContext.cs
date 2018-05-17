@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using QuizzGame.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace QuizzGame.Data
 {
-    public class QuizzGameContext : DbContext
+    public class QuizzGameContext : IdentityDbContext<User>
     {
         public QuizzGameContext(DbContextOptions options) : base(options)
         {
 
         }
 
-       // public DbSet<Category> Categories { get; set; }
         public DbSet<Question> Questions { get; set; }
 
         public void SeedQuestions()

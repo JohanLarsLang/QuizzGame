@@ -20,6 +20,8 @@ namespace QuizzGame
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+
         }
 
         public IConfiguration Configuration { get; }
@@ -28,6 +30,8 @@ namespace QuizzGame
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<QuizzGameContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDb")));
+
+            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<QuizzGameContext>().AddDefaultTokenProviders();
 
             services.AddMvc();
         }
@@ -51,11 +55,13 @@ namespace QuizzGame
 
             app.UseStaticFiles();
 
+            app.UseAuthentication();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Account}/{action=Login}/{id?}");
 
                 routes.MapSpaFallbackRoute(
                     name: "spa-fallback",

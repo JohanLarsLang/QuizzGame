@@ -101,10 +101,10 @@ header h1 {
     line-height: 90px;
     text-align: center;
     color: #154360;
-    margin: 10px 10px 0px 10px;
+    margin: 10px 10px 1px 10px;
     padding-bottom: 20px;
     text-shadow: 30px 30px #0066FF;
-    box-shadow: 0px 0px 50px #111;
+    box-shadow: 1px 1px 50px #111;
 }
 
 .main-nav li .glyphicon {
