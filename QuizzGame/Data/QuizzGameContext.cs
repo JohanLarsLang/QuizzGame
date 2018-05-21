@@ -16,6 +16,7 @@ namespace QuizzGame.Data
         }
 
         public DbSet<Question> Questions { get; set; }
+        public DbSet<HighScore> HighScores { get; set; }
 
         public void SeedQuestions()
         {
@@ -215,5 +216,7 @@ namespace QuizzGame.Data
 
             SaveChanges();
         }
+
+        public DbSet<QuizzGame.Models.HighScore> HighScore { get; set; }
         }
 }

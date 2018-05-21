@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
+let userName = document.getElementById('react-app')!.textContent;
+
 export class NavMenu extends React.Component<{}, {}> {
     public render() {
         return <div className='main-nav'>
@@ -12,7 +14,7 @@ export class NavMenu extends React.Component<{}, {}> {
                         <span className='icon-bar'></span>
                         <span className='icon-bar'></span>
                     </button>
-                    <Link className='navbar-brand' to={'/'}>Quizz Game</Link>
+                    <Link className='navbar-brand' to={'/'}>Quizz Game</Link> Hello: {userName}
                 </div>
                 <div className='clearfix'></div>
                 <div className='navbar-collapse collapse'>
@@ -42,6 +44,7 @@ export class NavMenu extends React.Component<{}, {}> {
                         </li>
 
                     </ul>
+                     
                 </div>
             </div>
         </div>;

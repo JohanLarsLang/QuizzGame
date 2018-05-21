@@ -2,6 +2,8 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link, NavLink } from 'react-router-dom';
 
+let userName = document.getElementById('react-app')!.textContent;
+
 export class Home extends React.Component<RouteComponentProps<{}>, {}> {
     public render() {
         return <div>
@@ -13,6 +15,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, {}> {
             <div className="welcome">
                 <br />
                 <br />
+                Hello {userName}!
                 <br />
                 <br />
                 <br />
