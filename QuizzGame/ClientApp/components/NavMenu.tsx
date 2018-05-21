@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
-let userName = document.getElementById('react-app')!.textContent;
+//let userName = document.getElementById('react-app')!.textContent;
 
 export class NavMenu extends React.Component<{}, {}> {
     public render() {
@@ -14,7 +14,6 @@ export class NavMenu extends React.Component<{}, {}> {
                         <span className='icon-bar'></span>
                         <span className='icon-bar'></span>
                     </button>
-                    <Link className='navbar-brand' to={'/'}>Quizz Game</Link> Hello: {userName}
                 </div>
                 <div className='clearfix'></div>
                 <div className='navbar-collapse collapse'>
@@ -24,7 +23,7 @@ export class NavMenu extends React.Component<{}, {}> {
                                 <span className='glyphicon glyphicon-home'></span> Home
                             </NavLink>
                         </li>
-                        
+
                         <li>
                             <NavLink to={'/playquizz'} activeClassName='active'>
                                 <span className='glyphicon glyphicon-play'></span> Play Quizz
@@ -44,7 +43,7 @@ export class NavMenu extends React.Component<{}, {}> {
                         </li>
 
                     </ul>
-                     
+
                 </div>
             </div>
         </div>;

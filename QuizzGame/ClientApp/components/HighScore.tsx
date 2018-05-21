@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
-let userName = document.getElementById('recat-app')!.textContent;
+let userName = document.getElementById('react-app')!.textContent;
+
+console.log('userName: ' + userName)
 
 
 export class HighScore extends React.Component<RouteComponentProps<{}>, {}> {
