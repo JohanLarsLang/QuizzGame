@@ -11,7 +11,7 @@ using System;
 namespace QuizzGame.Migrations
 {
     [DbContext(typeof(QuizzGameContext))]
-    [Migration("20180518122036_Initial")]
+    [Migration("20180525145318_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -138,15 +138,15 @@ namespace QuizzGame.Migrations
 
                     b.Property<int>("TotalScore");
 
-                    b.Property<string>("UserEmail");
-
                     b.Property<string>("UserId");
 
                     b.HasKey("id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("HighScore");
+                    b.ToTable("HighScores");
                 });
 
             modelBuilder.Entity("QuizzGame.Models.Question", b =>
@@ -265,9 +265,9 @@ namespace QuizzGame.Migrations
 
             modelBuilder.Entity("QuizzGame.Models.HighScore", b =>
                 {
-                    b.HasOne("QuizzGame.Models.User")
-                        .WithMany("HighScores")
-                        .HasForeignKey("UserId");
+                    b.HasOne("QuizzGame.Models.User", "User")
+                        .WithOne("HighScore")
+                        .HasForeignKey("QuizzGame.Models.HighScore", "UserId");
                 });
 #pragma warning restore 612, 618
         }

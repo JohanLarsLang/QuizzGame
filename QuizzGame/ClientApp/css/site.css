@@ -4,11 +4,15 @@ body {
     font-family: Calibri;
 }
 
+.login{
+    color: darkgray;
+}
+
 .list{
     font-weight: bold;
 }
 
-.btn-primary:hover{
+.btn-primary:hover {
     background-color: green;
 }
 

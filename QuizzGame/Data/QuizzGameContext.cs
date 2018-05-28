@@ -16,7 +16,8 @@ namespace QuizzGame.Data
         }
 
         public DbSet<Question> Questions { get; set; }
-        public DbSet<HighScore> HighScores { get; set; }
+        public DbSet<HighScoreViewModel> HighScores { get; set; }
+        //public DbSet<QuizzGame.Models.HighScore> HighScore { get; set; }
 
         public void SeedQuestions()
         {
@@ -213,10 +214,61 @@ namespace QuizzGame.Data
             };
             Questions.Add(question21);
 
+            /*
+            var user1 = new User()
+            {
+                Email = "test@email.se",
+                
+            };
+
+            Users.Add(user1);
+
+            var highScore1 = new HighScore()
+            {
+                User = user1,
+                Timestamp = new DateTime(),
+                TotalScore = 15
+            };
+            user1.HighScore = highScore1;
+
+            var user2 = new User()
+            {
+                Email = "kul@email.se",
+                
+            };
+
+            Users.Add(user2);
+
+            var highScore2 = new HighScore()
+            {
+                User = user2,
+                Timestamp = new DateTime(),
+                TotalScore = 10
+            };
+            user2.HighScore = highScore2;
+
+            var user3 = new User()
+            {
+                Email = "johan@email.se",
+                
+            };
+
+            Users.Add(user3);
+
+            var highScore3 = new HighScore()
+            {
+                User = user3,
+                Timestamp = new DateTime(),
+                TotalScore = 20
+            };
+
+            user3.HighScore = highScore3;
+
+    */
 
             SaveChanges();
         }
 
-        public DbSet<QuizzGame.Models.HighScore> HighScore { get; set; }
+       
         }
 }

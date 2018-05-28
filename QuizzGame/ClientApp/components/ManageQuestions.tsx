@@ -58,7 +58,7 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
         let question = this.state.question;
         let oldlist = question.map(q => q.id + ', ' + q.quizzEng + ', ' + q.quizzSwe + ', ' + q.correct + ', ' + q.score);
         let list = oldlist.map((x, index) =>
-            <li key={x + ':' + index}>{x}</li>);
+            <li className="list-group-item" key={x + ':' + index}>{x}</li>);
 
         return <div>
             <header>
@@ -82,29 +82,29 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
                 Question score: <input type="number" min="1" max="3" step="1" id="newScore" value={this.state.newScore} onChange={event => this.setState({ newScore: Number(event.target.value) })} />
                 <br />
                 <br />
-                <button className="btn btn-primary" disabled={!this.state.newQuestionEng || !this.state.newQuestionSwe} onClick={this.addNewQuestion}><i className="glyphicon glyphicon-plus-sign"></i> Add new qestion</button>
+                <button className="btn btn-primary btn-lg" disabled={!this.state.newQuestionEng || !this.state.newQuestionSwe} onClick={this.addNewQuestion}><i className="glyphicon glyphicon-plus-sign"></i> Add new qestion</button>
                 <br />
                 <br />
                 Question id: <input type="number" min="1" max={this.state.totalNrOfQuestions} step="1" onChange={event => this.setState({ actualId: Number(event.target.value) })} />
                 <br />
                 <br />
-                <button className="btn btn-warning" disabled={!this.state.actualId || !this.state.newQuestionEng || !this.state.newQuestionSwe} onClick={this.modifyQuestion}><i className="glyphicon glyphicon-edit"></i> Modify question</button>
+                <button className="btn btn-warning btn-lg" disabled={!this.state.actualId || !this.state.newQuestionEng || !this.state.newQuestionSwe} onClick={this.modifyQuestion}><i className="glyphicon glyphicon-edit"></i> Modify question</button>
                 <br />
                 <br />
-                <button className="btn btn-warning" disabled={!this.state.actualId} onClick={this.deleteQuestion}><i className="glyphicon glyphicon-trash"></i> Delete question</button>
+                <button className="btn btn-warning btn-lg" disabled={!this.state.actualId} onClick={this.deleteQuestion}><i className="glyphicon glyphicon-trash"></i> Delete question</button>
             </div>
             <br />
             <div id="showStatus">{this.state.statusMessage}</div>
             <br />
             <br />
             <div className="allQuestions">
-                <button className="btn btn-primary" onClick={this.showAllQuestions}><i className="glyphicon glyphicon-th-list"></i> Show All existing qestions</button>
+                <button className="btn btn-primary btn-lg" onClick={this.showAllQuestions}><i className="glyphicon glyphicon-th-list"></i> Show All existing qestions</button>
                 <br />
                 <div>
                     <br />
                     <div className="list">
-                    {this.state.allQuestionInfo}
-                        <ul>{list}</ul>
+                        {this.state.allQuestionInfo}
+                        <ul className="list-group">{list}</ul>
                         </div>
 
                 </div>

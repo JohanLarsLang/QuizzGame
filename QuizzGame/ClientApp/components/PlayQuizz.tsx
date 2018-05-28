@@ -69,7 +69,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             
             Click here to start Quizz Game:
             <br />
-            <button className="btn btn-primary" disabled={this.state.startTrue} onClick={this.startQuizzGame}><i className="glyphicon glyphicon-play-circle"></i> Start Quizz Game</button>
+            <button className="btn btn-primary btn-lg" disabled={this.state.startTrue} onClick={this.startQuizzGame}><i className="glyphicon glyphicon-play-circle"></i> Start Quizz Game</button>
             <br />
             <br />
 
@@ -95,7 +95,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                 Click here for next question or cancel:
                  <br />
                 <br />
-                <button className="btn btn-primary" disabled={!this.state.nextQuestion} onClick={this.handleQuizzQuestion}><i className="glyphicon glyphicon-forward"></i> Next Question</button> <button className="btn btn-warning" disabled={!this.state.cancelQuestion} onClick={this.cancelGame}><i className="glyphicon glyphicon-remove"></i> Cancel</button>
+                <button className="btn btn-primary btn-lg" disabled={!this.state.nextQuestion} onClick={this.handleQuizzQuestion}><i className="glyphicon glyphicon-forward"></i> Next Question</button> <button className="btn btn-warning btn-lg" disabled={!this.state.cancelQuestion} onClick={this.cancelGame}><i className="glyphicon glyphicon-remove"></i> Cancel</button>
                 <br />
                 <br />
                 {this.state.resultMessage}

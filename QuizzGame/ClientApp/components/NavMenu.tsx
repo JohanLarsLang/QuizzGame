@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
-//let userName = document.getElementById('react-app')!.textContent;
+let userName = document.getElementById('react-app')!.textContent;
+console.log('userName: ' + userName);
 
 export class NavMenu extends React.Component<{}, {}> {
     public render() {
@@ -15,6 +16,7 @@ export class NavMenu extends React.Component<{}, {}> {
                         <span className='icon-bar'></span>
                     </button>
                 </div>
+
                 <div className='clearfix'></div>
                 <div className='navbar-collapse collapse'>
                     <ul className='nav navbar-nav'>
@@ -41,8 +43,11 @@ export class NavMenu extends React.Component<{}, {}> {
                                 <span className='glyphicon glyphicon-transfer'></span> Manage questions
                             </NavLink>
                         </li>
-
                     </ul>
+
+                    <div className="login">
+                        Login: {userName}
+                    </div>
 
                 </div>
             </div>

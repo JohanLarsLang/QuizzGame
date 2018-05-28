@@ -54,7 +54,7 @@ namespace QuizzGame
             {
                 var context = scope.ServiceProvider.GetService<QuizzGameContext>();
 
-                //context.Database.EnsureDeleted();
+               // context.Database.EnsureDeleted();
                 context.Database.Migrate();
 /*
                 RoleManager<IdentityRole> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -110,7 +110,7 @@ namespace QuizzGame
 
                 try
                 {
-                    context.Database.EnsureDeleted();
+                    //context.Database.EnsureDeleted();
                     context.Database.Migrate();
 
                     if (!context.Questions.Any())

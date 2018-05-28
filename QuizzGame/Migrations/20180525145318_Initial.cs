@@ -171,21 +171,20 @@ namespace QuizzGame.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HighScore",
+                name: "HighScores",
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Timestamp = table.Column<DateTime>(nullable: false),
                     TotalScore = table.Column<int>(nullable: false),
-                    UserEmail = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HighScore", x => x.id);
+                    table.PrimaryKey("PK_HighScores", x => x.id);
                     table.ForeignKey(
-                        name: "FK_HighScore_AspNetUsers_UserId",
+                        name: "FK_HighScores_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -232,9 +231,11 @@ namespace QuizzGame.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HighScore_UserId",
-                table: "HighScore",
-                column: "UserId");
+                name: "IX_HighScores_UserId",
+                table: "HighScores",
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -255,7 +256,7 @@ namespace QuizzGame.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "HighScore");
+                name: "HighScores");
 
             migrationBuilder.DropTable(
                 name: "Questions");

@@ -11,7 +11,7 @@ using QuizzGame.Models;
 namespace QuizzGame.Controllers
 {
     [Produces("application/json")]
-    [Route("api/HighScores")]
+    //[Route("api/HighScores")]
     public class HighScoresController : Controller
     {
         private readonly QuizzGameContext _context;
@@ -22,10 +22,23 @@ namespace QuizzGame.Controllers
         }
 
         // GET: api/HighScores
+        [Route("api/GetHighScores")]
         [HttpGet]
-        public IEnumerable<HighScore> GetHighScore()
+        // public IEnumerable<HighScoreViewModel> GetHighScore()
+        public IActionResult GetHighScore() 
         {
-            return _context.HighScore;
+
+            var allHighscores = from x in _context.HighScores
+                                orderby x.TotalScore descending
+                                select new
+                                {
+                                    x.TotalScore,
+                                    x.Timestamp,
+                                    x.User.Email
+                                };
+         
+            return Ok(allHighscores);
+               
         }
 
         // GET: api/HighScores/5
@@ -37,7 +50,7 @@ namespace QuizzGame.Controllers
                 return BadRequest(ModelState);
             }
 
-            var highScore = await _context.HighScore.SingleOrDefaultAsync(m => m.id == id);
+            var highScore = await _context.HighScores.SingleOrDefaultAsync(m => m.id == id);
 
             if (highScore == null)
             {
@@ -47,9 +60,40 @@ namespace QuizzGame.Controllers
             return Ok(highScore);
         }
 
+        [Route("api/Highscore/Add")]
+        [HttpGet]
+        public async Task<IActionResult> AddHigscore(string ActualUserEmail, DateTime NewTimeStamp, int NewTotalScore)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var highscore = await _context.HighScores.SingleOrDefaultAsync(m => m.User.Email == ActualUserEmail);
+
+            highscore.Timestamp = NewTimeStamp;
+            highscore.TotalScore = NewTotalScore;
+  
+
+            try
+            {
+        
+                _context.HighScores.Add(highscore);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Message: " + ex);
+            }
+
+
+            return Ok(highscore);
+        }
+
         // PUT: api/HighScores/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHighScore([FromRoute] int id, [FromBody] HighScore highScore)
+        public async Task<IActionResult> PutHighScore([FromRoute] int id, [FromBody] HighScoreViewModel highScore)
         {
             if (!ModelState.IsValid)
             {
@@ -83,15 +127,19 @@ namespace QuizzGame.Controllers
         }
 
         // POST: api/HighScores
+        [Route("api/Highscore/Post")]
         [HttpPost]
-        public async Task<IActionResult> PostHighScore([FromBody] HighScore highScore)
+        public async Task<IActionResult> PostHighScore([FromBody] HighScoreViewModel highScore)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.HighScore.Add(highScore);
+            highScore.Timestamp = DateTime.Now;
+
+
+            _context.HighScores.Add(highScore);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetHighScore", new { id = highScore.id }, highScore);
@@ -106,13 +154,13 @@ namespace QuizzGame.Controllers
                 return BadRequest(ModelState);
             }
 
-            var highScore = await _context.HighScore.SingleOrDefaultAsync(m => m.id == id);
+            var highScore = await _context.HighScores.SingleOrDefaultAsync(m => m.id == id);
             if (highScore == null)
             {
                 return NotFound();
             }
 
-            _context.HighScore.Remove(highScore);
+            _context.HighScores.Remove(highScore);
             await _context.SaveChangesAsync();
 
             return Ok(highScore);
@@ -120,7 +168,7 @@ namespace QuizzGame.Controllers
 
         private bool HighScoreExists(int id)
         {
-            return _context.HighScore.Any(e => e.id == id);
+            return _context.HighScores.Any(e => e.id == id);
         }
     }
 }
