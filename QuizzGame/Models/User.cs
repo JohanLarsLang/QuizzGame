@@ -9,7 +9,7 @@ namespace QuizzGame.Models
     public class User : IdentityUser
     {
 
-       public  HighScoreViewModel HighScore { get; set; }
+       public  HighScore HighScore { get; set; }
         
     }
 }

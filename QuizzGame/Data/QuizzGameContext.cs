@@ -16,7 +16,7 @@ namespace QuizzGame.Data
         }
 
         public DbSet<Question> Questions { get; set; }
-        public DbSet<HighScoreViewModel> HighScores { get; set; }
+        public DbSet<HighScore> HighScores { get; set; }
         //public DbSet<QuizzGame.Models.HighScore> HighScore { get; set; }
 
         public void SeedQuestions()

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace QuizzGame.Models
 {
-    public class HighScoreViewModel
+    public class HighScore
     {
         public int id { get; set; }
         public User User { get; set; }

@@ -21,10 +21,9 @@ namespace QuizzGame.Controllers
             _context = context;
         }
 
-        // GET: api/HighScores
+        // GET:
         [Route("api/GetHighScores")]
         [HttpGet]
-        // public IEnumerable<HighScoreViewModel> GetHighScore()
         public IActionResult GetHighScore() 
         {
 
@@ -64,15 +63,28 @@ namespace QuizzGame.Controllers
         [HttpGet]
         public async Task<IActionResult> AddHigscore(string ActualUserEmail, DateTime NewTimeStamp, int NewTotalScore)
         {
-            if (!ModelState.IsValid)
+
+            var user = from x in _context.HighScores
+                         where x.User.Email == ActualUserEmail
+                         select x.User.Id;
+
+          //var highscore = await _context.HighScores.SingleOrDefaultAsync(e => e.User == user);
+
+            
+            
+            HighScore highscore = new HighScore()
             {
-                return BadRequest(ModelState);
-            }
+                User = (User)user,
+                Timestamp = NewTimeStamp,
+                TotalScore = NewTotalScore
 
-            var highscore = await _context.HighScores.SingleOrDefaultAsync(m => m.User.Email == ActualUserEmail);
+            };
+            
+            
 
-            highscore.Timestamp = NewTimeStamp;
-            highscore.TotalScore = NewTotalScore;
+           // highscore.Timestamp = NewTimeStamp;
+           // highscore.TotalScore = NewTotalScore;
+                
   
 
             try
@@ -93,7 +105,7 @@ namespace QuizzGame.Controllers
 
         // PUT: api/HighScores/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHighScore([FromRoute] int id, [FromBody] HighScoreViewModel highScore)
+        public async Task<IActionResult> PutHighScore([FromRoute] int id, [FromBody] HighScore highScore)
         {
             if (!ModelState.IsValid)
             {
@@ -129,7 +141,7 @@ namespace QuizzGame.Controllers
         // POST: api/HighScores
         [Route("api/Highscore/Post")]
         [HttpPost]
-        public async Task<IActionResult> PostHighScore([FromBody] HighScoreViewModel highScore)
+        public async Task<IActionResult> PostHighScore([FromBody] HighScore highScore)
         {
             if (!ModelState.IsValid)
             {
