@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizzGame.Data;
 using QuizzGame.Models;
+
 
 namespace QuizzGame.Controllers
 {
@@ -15,16 +17,18 @@ namespace QuizzGame.Controllers
     public class HighScoresController : Controller
     {
         private readonly QuizzGameContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public HighScoresController(QuizzGameContext context)
+        public HighScoresController(QuizzGameContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET:
         [Route("api/GetHighScores")]
         [HttpGet]
-        public IActionResult GetHighScore() 
+        public IActionResult GetHighScore()
         {
 
             var allHighscores = from x in _context.HighScores
@@ -35,9 +39,9 @@ namespace QuizzGame.Controllers
                                     x.Timestamp,
                                     x.User.Email
                                 };
-         
+
             return Ok(allHighscores);
-               
+
         }
 
         // GET: api/HighScores/5
@@ -64,43 +68,97 @@ namespace QuizzGame.Controllers
         public async Task<IActionResult> AddHigscore(string ActualUserEmail, DateTime NewTimeStamp, int NewTotalScore)
         {
 
-            var user = from x in _context.HighScores
-                         where x.User.Email == ActualUserEmail
-                         select x.User.Id;
+            var userEmails = from x in _context.HighScores.Include(u => u.User)
+                             select x.User.Email;
 
-          //var highscore = await _context.HighScores.SingleOrDefaultAsync(e => e.User == user);
+            bool userExistInHigscore = false;
 
-            
-            
-            HighScore highscore = new HighScore()
+            foreach (var x in userEmails)
             {
-                User = (User)user,
-                Timestamp = NewTimeStamp,
-                TotalScore = NewTotalScore
-
-            };
-            
-            
-
-           // highscore.Timestamp = NewTimeStamp;
-           // highscore.TotalScore = NewTotalScore;
-                
-  
-
-            try
-            {
-        
-                _context.HighScores.Add(highscore);
-                await _context.SaveChangesAsync();
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Message: " + ex);
+                if (x == ActualUserEmail)
+                    userExistInHigscore = true;
             }
 
+            if (userExistInHigscore == true)
+            {
+                var user = (from x in _context.HighScores.Include(u => u.User)
+                            where x.User.Email == ActualUserEmail
+                            select x.User).First();
 
-            return Ok(highscore);
+                var userScore = (from x in _context.HighScores.Include(u => u.User)
+                                 where x.User.Email == ActualUserEmail
+                                 select x.TotalScore).First();
+
+
+
+                var highscore = await _context.HighScores.SingleOrDefaultAsync(e => e.User.Email == ActualUserEmail);
+
+                highscore.User = user;
+                highscore.Timestamp = NewTimeStamp;
+                highscore.TotalScore = NewTotalScore;
+
+                try
+                {
+                    if (NewTotalScore > userScore)
+                        await _context.SaveChangesAsync();
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Message: " + ex);
+                }
+            }
+
+            else
+            {
+                var user = await _userManager.GetUserAsync(User);
+
+
+                HighScore highscore = new HighScore()
+                {
+                    User = user,
+                    Timestamp = NewTimeStamp,
+                    TotalScore = NewTotalScore
+
+                };
+
+                try
+                {
+
+                    _context.HighScores.Add(highscore);
+                    await _context.SaveChangesAsync();
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Message: " + ex);
+                }
+            }
+
+
+            return NoContent();
+        }
+
+        [Route("api/HighScore/CountNr")]
+        [HttpGet]
+        public int GetCountNrHighScore(string ActualUserEmail)
+        {
+            var userEmailsOrderdByHighScore = from x in _context.HighScores.Include(u => u.User)
+                                              orderby x.TotalScore descending
+                                              select x.User.Email;
+
+            int nrInHihgScore = 0;
+            int counter = 1;
+
+            foreach (var x in userEmailsOrderdByHighScore)
+            {
+                if (x == ActualUserEmail)
+                    nrInHihgScore = counter;
+
+                counter++;
+            }
+
+            return nrInHihgScore;
         }
 
         // PUT: api/HighScores/5
