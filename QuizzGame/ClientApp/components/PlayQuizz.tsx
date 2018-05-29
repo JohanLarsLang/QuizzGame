@@ -5,6 +5,9 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
+let userName = document.getElementById('react-app')!.textContent;
+console.log('userName: ' + userName);
+
 interface IPlayQuizzProps {
     setActualQuestionCorrect: boolean;
 }
@@ -25,6 +28,7 @@ interface IPlayQuizzState {
     cancelQuestion: boolean;
     resultMessage: string;
     hasFetchedData: boolean;
+    userEmail: string;
 }
 
 
@@ -46,7 +50,8 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             nextQuestion: false,
             cancelQuestion: false,
             resultMessage: "",
-            hasFetchedData: false
+            hasFetchedData: false,
+            userEmail: "kul@email.se"
         };
 
         this.startQuizzGame = this.startQuizzGame.bind(this);
@@ -55,6 +60,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
         this.handleQuizzQuestion = this.handleQuizzQuestion.bind(this);
         this.cancelGame = this.cancelGame.bind(this);
         this.gameComplete = this.gameComplete.bind(this);
+        this.saveHighscore = this.saveHighscore.bind(this);
     }
 
     public render() {
@@ -64,20 +70,16 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                 <h1>Play Quizz Game</h1>
             </header>
             <br />
+            <p>User: {userName}</p>
             <br />
-            <p className="list">Select True or False for the quizz questions..</p>
-            
-            Click here to start Quizz Game:
-            <br />
-            <button className="btn btn-primary btn-lg" disabled={this.state.startTrue} onClick={this.startQuizzGame}><i className="glyphicon glyphicon-play-circle"></i> Start Quizz Game</button>
-            <br />
-            <br />
+            <p>Select True or False for the quizz questions..</p>
 
-            <div className="NewQuestion">
+            <p>Click here to start Quizz Game:</p>
+            <button className="btn btn-primary btn-lg" disabled={this.state.startTrue} onClick={this.startQuizzGame}><i className="glyphicon glyphicon-play-circle"></i> Start Quizz Game</button>
+
+            <div className="list">
                 <br />
-                Question {this.state.countQuestion} ({this.state.totalNrOfQuestions}):
-                <br />
-                <br />
+                <p> Question {this.state.countQuestion} ({this.state.totalNrOfQuestions}):</p>
                 {this.state.actualQuestion} ({this.state.actualQuestionScore} p)
                 <br />
                 <br />
@@ -85,18 +87,14 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                     <input type="checkbox" checked={this.state.chkbox} disabled={!this.state.setAnswer} onChange={this.answerTrue} /> True  <input type="checkbox" checked={this.state.chkbox} disabled={!this.state.setAnswer} onClick={this.answerFalse} /> False
                 </pre>
                 <br />
-                Your answer: {this.state.answerMessage}
+                <p>Your answer: {this.state.answerMessage}</p>
                 <br />
-                <br />
-                Total score: {this.state.totalScore}
-                <br />
+                <p>Total score: {this.state.totalScore}</p>
                 <br />
 
-                Click here for next question or cancel:
-                 <br />
+                <p>Click here for next question or cancel:</p>
                 <br />
                 <button className="btn btn-primary btn-lg" disabled={!this.state.nextQuestion} onClick={this.handleQuizzQuestion}><i className="glyphicon glyphicon-forward"></i> Next Question</button> <button className="btn btn-warning btn-lg" disabled={!this.state.cancelQuestion} onClick={this.cancelGame}><i className="glyphicon glyphicon-remove"></i> Cancel</button>
-                <br />
                 <br />
                 {this.state.resultMessage}
             </div>
@@ -204,13 +202,6 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
 
     handleQuizzQuestion(event: any) {
 
-        /*
-                       fetch('api/GetQuestionInfo?currentId=' + this.state.countQuestion)
-                   .then(response => {
-                       response.text().then(text => console.log(`Received text from server: "${text}"`));
-                   });
-       */
-
         this.setState({
             answerMessage: "",
             setAnswer: true,
@@ -228,11 +219,11 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                     actualQuestion: json.quizzEng,
                     actualQuestionScore: json.score,
                     actualQuestionCorrect: json.correct,
-         
+
                 });
                 console.log('Get Question info json: ', json);
             })
-          
+
         this.setState({
 
             nextQuestion: false
@@ -276,6 +267,20 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
 
         })
 
+        this.saveHighscore()
+    }
+
+    saveHighscore() {
+
+        fetch('api/Highscore/Add?ActualUserEmail=' + this.state.userEmail + '&newTotalScore=' + this.state.totalScore)
+
+            .then(data => {
+                console.log('Save Highscore Data: ', data);
+                return data.json();
+            })
+            .then(obj => {
+                console.log('Save Highscore json: ', obj);
+            })
     }
 
     componentDidMount() {

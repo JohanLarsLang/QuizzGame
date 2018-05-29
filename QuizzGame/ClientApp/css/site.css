@@ -8,7 +8,7 @@ body {
     color: darkgray;
 }
 
-.list{
+.list, p, pre{
     font-weight: bold;
 }
 

@@ -65,7 +65,7 @@ namespace QuizzGame.Controllers
 
         [Route("api/Highscore/Add")]
         [HttpGet]
-        public async Task<IActionResult> AddHigscore(string ActualUserEmail, DateTime NewTimeStamp, int NewTotalScore)
+        public async Task<IActionResult> AddHigscore(string ActualUserEmail, int NewTotalScore)
         {
 
             var userEmails = from x in _context.HighScores.Include(u => u.User)
@@ -94,7 +94,7 @@ namespace QuizzGame.Controllers
                 var highscore = await _context.HighScores.SingleOrDefaultAsync(e => e.User.Email == ActualUserEmail);
 
                 highscore.User = user;
-                highscore.Timestamp = NewTimeStamp;
+                highscore.Timestamp = DateTime.Today;
                 highscore.TotalScore = NewTotalScore;
 
                 try
@@ -117,7 +117,7 @@ namespace QuizzGame.Controllers
                 HighScore highscore = new HighScore()
                 {
                     User = user,
-                    Timestamp = NewTimeStamp,
+                    Timestamp = DateTime.Today,
                     TotalScore = NewTotalScore
 
                 };
