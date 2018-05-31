@@ -65,33 +65,40 @@ namespace QuizzGame.Controllers
 
         [Route("api/Highscore/Add")]
         [HttpGet]
-        public async Task<IActionResult> AddHigscore(string ActualUserEmail, int NewTotalScore)
+        public async Task<IActionResult> AddHigscore(string UserEmail, int NewTotalScore)
         {
+            string trim = UserEmail.Substring(0, UserEmail.LastIndexOf("P"));
+           
+
+            var UserEmailTrim = trim.Substring(trim.IndexOf(':') + 1);
+
+            UserEmail = UserEmailTrim.Replace(" ", string.Empty);
 
             var userEmails = from x in _context.HighScores.Include(u => u.User)
                              select x.User.Email;
 
+             
             bool userExistInHigscore = false;
 
             foreach (var x in userEmails)
             {
-                if (x == ActualUserEmail)
+                if (x == UserEmail)
                     userExistInHigscore = true;
             }
 
             if (userExistInHigscore == true)
             {
+                
                 var user = (from x in _context.HighScores.Include(u => u.User)
-                            where x.User.Email == ActualUserEmail
+                            where x.User.Email == UserEmail
                             select x.User).First();
 
                 var userScore = (from x in _context.HighScores.Include(u => u.User)
-                                 where x.User.Email == ActualUserEmail
+                                 where x.User.Email == UserEmail
                                  select x.TotalScore).First();
 
-
-
-                var highscore = await _context.HighScores.SingleOrDefaultAsync(e => e.User.Email == ActualUserEmail);
+    
+                var highscore = await _context.HighScores.SingleOrDefaultAsync(e => e.User.Email == UserEmail);
 
                 highscore.User = user;
                 highscore.Timestamp = DateTime.Today;
@@ -141,19 +148,25 @@ namespace QuizzGame.Controllers
 
         [Route("api/HighScore/CountNr")]
         [HttpGet]
-        public int GetCountNrHighScore(string ActualUserEmail)
+        public int GetCountNrHighScore(string UserEmail)
         {
-            var userEmailsOrderdByHighScore = from x in _context.HighScores.Include(u => u.User)
+            // var userId = _userManager.GetUserId(User);
+
+            UserEmail = UserEmail.Replace(" ", string.Empty);
+
+            var userIdOrderdByHighScore = from x in _context.HighScores.Include(u => u.User)
                                               orderby x.TotalScore descending
                                               select x.User.Email;
 
             int nrInHihgScore = 0;
             int counter = 1;
 
-            foreach (var x in userEmailsOrderdByHighScore)
+            foreach (var x in userIdOrderdByHighScore)
             {
-                if (x == ActualUserEmail)
+                if (x == UserEmail)
+                {
                     nrInHihgScore = counter;
+                }
 
                 counter++;
             }

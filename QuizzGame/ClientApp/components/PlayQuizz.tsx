@@ -28,7 +28,6 @@ interface IPlayQuizzState {
     cancelQuestion: boolean;
     resultMessage: string;
     hasFetchedData: boolean;
-    userEmail: string;
 }
 
 
@@ -51,7 +50,6 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             cancelQuestion: false,
             resultMessage: "",
             hasFetchedData: false,
-            userEmail: "kul@email.se"
         };
 
         this.startQuizzGame = this.startQuizzGame.bind(this);
@@ -77,7 +75,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             <p>Click here to start Quizz Game:</p>
             <button className="btn btn-primary btn-lg" disabled={this.state.startTrue} onClick={this.startQuizzGame}><i className="glyphicon glyphicon-play-circle"></i> Start Quizz Game</button>
 
-            <div className="list">
+            <div>
                 <br />
                 <p> Question {this.state.countQuestion} ({this.state.totalNrOfQuestions}):</p>
                 {this.state.actualQuestion} ({this.state.actualQuestionScore} p)
@@ -153,18 +151,16 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             })
         }
 
-        if (this.state.countQuestion > this.state.totalNrOfQuestions) {
-            this.gameComplete();
-        }
-
-        if (this.state.countQuestion == this.state.totalNrOfQuestions) {
-            this.gameComplete();
-        }
-        else {
+        if (this.state.countQuestion < this.state.totalNrOfQuestions) {
             this.setState({
                 nextQuestion: true,
                 countQuestion: this.state.countQuestion + 1
+               
             })
+        }
+
+        else if (this.state.countQuestion == this.state.totalNrOfQuestions) {
+            this.gameComplete();
         }
 
     }
@@ -189,14 +185,16 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             })
         }
 
-        if (this.state.countQuestion == this.state.totalNrOfQuestions) {
-            this.gameComplete();
-        }
-        else {
+        if (this.state.countQuestion < this.state.totalNrOfQuestions) {
             this.setState({
                 nextQuestion: true,
                 countQuestion: this.state.countQuestion + 1
+                
             })
+        }
+
+        else if (this.state.countQuestion == this.state.totalNrOfQuestions) {
+            this.gameComplete();
         }
     }
 
@@ -227,6 +225,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
         this.setState({
 
             nextQuestion: false
+            
         })
 
         /*
@@ -272,8 +271,10 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
 
     saveHighscore() {
 
-        fetch('api/Highscore/Add?ActualUserEmail=' + this.state.userEmail + '&newTotalScore=' + this.state.totalScore)
+        let userEmil = document.getElementById('react-app')!.textContent; 
+        console.log('User email: ', userEmil)
 
+        fetch('api/Highscore/Add?UserEmail=' + userEmil + '&newTotalScore=' + this.state.totalScore)
             .then(data => {
                 console.log('Save Highscore Data: ', data);
                 return data.json();
@@ -281,6 +282,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             .then(obj => {
                 console.log('Save Highscore json: ', obj);
             })
+
     }
 
     componentDidMount() {
