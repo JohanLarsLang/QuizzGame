@@ -28,6 +28,7 @@ interface IPlayQuizzState {
     cancelQuestion: boolean;
     resultMessage: string;
     hasFetchedData: boolean;
+    maxTotalScore: number;
 }
 
 
@@ -50,12 +51,15 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             cancelQuestion: false,
             resultMessage: "",
             hasFetchedData: false,
+            maxTotalScore: 0
         };
 
         this.startQuizzGame = this.startQuizzGame.bind(this);
+        this.countMaxTotalScore = this.countMaxTotalScore.bind(this)
         this.answerTrue = this.answerTrue.bind(this);
         this.answerFalse = this.answerFalse.bind(this);
         this.handleQuizzQuestion = this.handleQuizzQuestion.bind(this);
+        this.nextQuestion = this.nextQuestion.bind(this);
         this.cancelGame = this.cancelGame.bind(this);
         this.gameComplete = this.gameComplete.bind(this);
         this.saveHighscore = this.saveHighscore.bind(this);
@@ -87,14 +91,15 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                 <br />
                 <p>Your answer: {this.state.answerMessage}</p>
                 <br />
-                <p>Total score: {this.state.totalScore}</p>
+                <p>Total score: {this.state.totalScore} (Max: {this.state.maxTotalScore})</p>
                 <br />
 
                 <p>Click here for next question or cancel:</p>
                 <br />
-                <button className="btn btn-primary btn-lg" disabled={!this.state.nextQuestion} onClick={this.handleQuizzQuestion}><i className="glyphicon glyphicon-forward"></i> Next Question</button> <button className="btn btn-warning btn-lg" disabled={!this.state.cancelQuestion} onClick={this.cancelGame}><i className="glyphicon glyphicon-remove"></i> Cancel</button>
+                <button className="btn btn-primary btn-lg" disabled={!this.state.nextQuestion} onClick={this.nextQuestion}><i className="glyphicon glyphicon-forward"></i> Next Question</button> <button className="btn btn-warning btn-lg" disabled={!this.state.cancelQuestion} onClick={this.cancelGame}><i className="glyphicon glyphicon-remove"></i> Cancel</button>
                 <br />
-                {this.state.resultMessage}
+                <br />
+                <p>{this.state.resultMessage}</p>
             </div>
         </div>;
     }
@@ -127,6 +132,28 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
 
             })
 
+        this.countMaxTotalScore();
+        this.handleQuizzQuestion(1);
+    }
+
+    countMaxTotalScore() {
+
+        fetch('api/HighScore/CountTotalMax')
+
+            .then(data => {
+                console.log('Get data: ', data);
+                return data.json();
+
+            })
+            .then(json => {
+                this.setState({
+                    maxTotalScore: json
+
+                });
+                console.log('Get json: ', json);
+
+            })
+
         this.handleQuizzQuestion(1);
     }
 
@@ -153,14 +180,14 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
 
         if (this.state.countQuestion < this.state.totalNrOfQuestions) {
             this.setState({
-                nextQuestion: true,
-                countQuestion: this.state.countQuestion + 1
+                nextQuestion: true
+                
                
             })
         }
 
         else if (this.state.countQuestion == this.state.totalNrOfQuestions) {
-            this.gameComplete();
+            this.gameComplete(this.state.totalScore);
         }
 
     }
@@ -187,26 +214,26 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
 
         if (this.state.countQuestion < this.state.totalNrOfQuestions) {
             this.setState({
-                nextQuestion: true,
-                countQuestion: this.state.countQuestion + 1
+                nextQuestion: true
+               
                 
             })
         }
-
         else if (this.state.countQuestion == this.state.totalNrOfQuestions) {
-            this.gameComplete();
+            this.gameComplete(this.state.totalScore + this.state.actualQuestionScore);
         }
     }
 
-    handleQuizzQuestion(event: any) {
+    handleQuizzQuestion(questionNumber: number) {
 
         this.setState({
             answerMessage: "",
             setAnswer: true,
-            chkbox: false
+            chkbox: false,
+                      
         })
 
-        fetch('api/GetQuestionInfo?currentId=' + this.state.countQuestion)
+        fetch('api/GetQuestionInfo?currentId=' + questionNumber)
             .then(data => {
                 console.log('Get Qustion Info: ', data);
                 return data.json();
@@ -225,7 +252,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
         this.setState({
 
             nextQuestion: false
-            
+                        
         })
 
         /*
@@ -240,11 +267,21 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
         */
     }
 
-    cancelGame(event: any) {
+    nextQuestion(event: any) {
+
+        this.setState({
+            countQuestion: this.state.countQuestion + 1
+        });
+
+        this.handleQuizzQuestion(this.state.countQuestion + 1);
+
+    }
+
+    cancelGame() {
 
         this.setState({
             startTrue: false,
-            countQuestion: 1,
+            countQuestion: 0,
             actualQuestion: "",
             totalScore: 0,
             answerMessage: "",
@@ -257,24 +294,24 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
 
     }
 
-    gameComplete() {
+    gameComplete(totalScore: number) {
 
         this.setState({
             startTrue: false,
             cancelQuestion: false,
-            resultMessage: "Congratulations! You got: " + this.state.totalScore + " score!. Press Start Quizz Game to play again..."
+            resultMessage: "Congratulations! You got: " + totalScore + " score!. Press Start Quizz Game to play again..."
 
         })
 
-        this.saveHighscore()
+        this.saveHighscore(totalScore)
     }
 
-    saveHighscore() {
+    saveHighscore(newTotalScore: number) {
 
-        let userEmil = document.getElementById('react-app')!.textContent; 
-        console.log('User email: ', userEmil)
+       // let userEmil = document.getElementById('react-app')!.textContent; 
+        console.log('User email: ', userName)
 
-        fetch('api/Highscore/Add?UserEmail=' + userEmil + '&newTotalScore=' + this.state.totalScore)
+        fetch('api/Highscore/Add?UserEmail=' + userName + '&newTotalScore=' + newTotalScore)
             .then(data => {
                 console.log('Save Highscore Data: ', data);
                 return data.json();
@@ -287,7 +324,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
 
     componentDidMount() {
         //this.startQuizzGame(1);
-        // this.handleQuizzQuestion(1);
+       // this.handleQuizzQuestion(1);
     }
 }
 

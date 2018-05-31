@@ -67,12 +67,12 @@ namespace QuizzGame.Controllers
         [HttpGet]
         public async Task<IActionResult> AddHigscore(string UserEmail, int NewTotalScore)
         {
-            string trim = UserEmail.Substring(0, UserEmail.LastIndexOf("P"));
+           // string trim = UserEmail.Substring(0, UserEmail.LastIndexOf("P"));
            
 
-            var UserEmailTrim = trim.Substring(trim.IndexOf(':') + 1);
+           // var UserEmailTrim = trim.Substring(trim.IndexOf(':') + 1);
 
-            UserEmail = UserEmailTrim.Replace(" ", string.Empty);
+            UserEmail = UserEmail.Replace(" ", string.Empty);
 
             var userEmails = from x in _context.HighScores.Include(u => u.User)
                              select x.User.Email;
@@ -118,7 +118,11 @@ namespace QuizzGame.Controllers
 
             else
             {
-                var user = await _userManager.GetUserAsync(User);
+                //var user = await _userManager.GetUserAsync(User);
+
+                var user = (from x in _context.Users
+                            where x.Email == UserEmail
+                            select x).First();
 
 
                 HighScore highscore = new HighScore()
@@ -172,6 +176,23 @@ namespace QuizzGame.Controllers
             }
 
             return nrInHihgScore;
+        }
+
+        [Route("api/HighScore/CountTotalMax")]
+        [HttpGet]
+        public int GetCountNrHighScore()
+        {
+            var allTotalScores = from x in _context.Questions
+                                 select x.Score;
+
+            int maxTotalScore = 0;
+
+            foreach (var x in allTotalScores)
+            {
+                maxTotalScore += x;
+            }
+
+            return maxTotalScore;
         }
 
         // PUT: api/HighScores/5
