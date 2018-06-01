@@ -195,6 +195,26 @@ namespace QuizzGame.Controllers
             return maxTotalScore;
         }
 
+        [Route("api/HighScore/UserCurrentHigscore")]
+        [HttpGet]
+        public int GetUserCurrentHighScore(string UserEmail)
+        {
+             UserEmail = UserEmail.Replace(" ", string.Empty);
+
+            var userHighscore = from x in _context.HighScores.Include(u => u.User)
+                                where x.User.Email == UserEmail
+                                select x.User.HighScore;
+
+            int curretHigscore = 0;
+
+            foreach (var x in userHighscore)
+            {
+                curretHigscore = x.TotalScore;
+                
+            }
+
+            return curretHigscore;
+        }
         // PUT: api/HighScores/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutHighScore([FromRoute] int id, [FromBody] HighScore highScore)

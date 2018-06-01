@@ -1,7 +1,3 @@
-// Johan Lång
-//import '/css/style.css';
-//     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
-
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
@@ -29,6 +25,7 @@ interface IPlayQuizzState {
     resultMessage: string;
     hasFetchedData: boolean;
     maxTotalScore: number;
+    currentTotalScore: number;
 }
 
 
@@ -51,11 +48,13 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             cancelQuestion: false,
             resultMessage: "",
             hasFetchedData: false,
-            maxTotalScore: 0
+            maxTotalScore: 0,
+            currentTotalScore: 0
         };
 
         this.startQuizzGame = this.startQuizzGame.bind(this);
-        this.countMaxTotalScore = this.countMaxTotalScore.bind(this)
+        this.countMaxTotalScore = this.countMaxTotalScore.bind(this);
+        this.getCurrentHighscore = this.getCurrentHighscore.bind(this);
         this.answerTrue = this.answerTrue.bind(this);
         this.answerFalse = this.answerFalse.bind(this);
         this.handleQuizzQuestion = this.handleQuizzQuestion.bind(this);
@@ -72,7 +71,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
                 <h1>Play Quizz Game</h1>
             </header>
             <br />
-            <p>User: {userName}</p>
+            <p>{userName}, Current Highscore: {this.state.currentTotalScore}</p>
             <br />
             <p>Select True or False for the quizz questions..</p>
 
@@ -181,8 +180,8 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
         if (this.state.countQuestion < this.state.totalNrOfQuestions) {
             this.setState({
                 nextQuestion: true
-                
-               
+
+
             })
         }
 
@@ -215,8 +214,8 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
         if (this.state.countQuestion < this.state.totalNrOfQuestions) {
             this.setState({
                 nextQuestion: true
-               
-                
+
+
             })
         }
         else if (this.state.countQuestion == this.state.totalNrOfQuestions) {
@@ -230,7 +229,7 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
             answerMessage: "",
             setAnswer: true,
             chkbox: false,
-                      
+
         })
 
         fetch('api/GetQuestionInfo?currentId=' + questionNumber)
@@ -252,19 +251,9 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
         this.setState({
 
             nextQuestion: false
-                        
+
         })
 
-        /*
-
-        if (!this.state.hasFetchedData) {
-            this.setState({
-                countQuestion: this.state.countQuestion + 1
-            });
-
-            this.handleQuizzQuestion(1);
-        }
-        */
     }
 
     nextQuestion(event: any) {
@@ -308,7 +297,6 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
 
     saveHighscore(newTotalScore: number) {
 
-       // let userEmil = document.getElementById('react-app')!.textContent; 
         console.log('User email: ', userName)
 
         fetch('api/Highscore/Add?UserEmail=' + userName + '&newTotalScore=' + newTotalScore)
@@ -322,9 +310,28 @@ export class PlayQuizz extends React.Component<RouteComponentProps<IPlayQuizzPro
 
     }
 
+    getCurrentHighscore() {
+
+        console.log('User email: ', userName)
+
+        fetch('api/HighScore/UserCurrentHigscore?UserEmail=' + userName)
+            .then(data => {
+                console.log('Current Highscore Data: ', data);
+                return data.json();
+            })
+            .then(obj => {
+                console.log('Current Highscore json: ', obj);
+                this.setState({
+                    currentTotalScore: obj
+
+
+                });
+            })
+
+    }
+
     componentDidMount() {
-        //this.startQuizzGame(1);
-       // this.handleQuizzQuestion(1);
+        this.getCurrentHighscore();
     }
 }
 

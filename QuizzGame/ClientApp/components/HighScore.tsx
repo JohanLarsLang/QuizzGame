@@ -1,4 +1,3 @@
-//Johan Lång
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
@@ -64,14 +63,6 @@ export class HighScore extends React.Component<RouteComponentProps<IHighScorePro
 
         </div>
     }
-    /*
-    getTodayDate() {
-        let today = new Date;
-        this.setState({
-            todayDate: today
-        });
-    }
-    */
 
     showAllHigscores() {
 

@@ -1,4 +1,3 @@
-//Johan Lång
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
@@ -67,7 +66,7 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
             <br />
             <br />
             <p className="list">Add, modify and delete questions.....</p>
-                        
+
             <div>
                 <input type="text" id="newQustionEng" placeholder="New question in English..."
                     value={this.state.newQuestionEng} onChange={event => this.setState({ newQuestionEng: event.target.value })} />
@@ -105,7 +104,7 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
                     <div className="list">
                         {this.state.allQuestionInfo}
                         <ul className="list-group">{list}</ul>
-                        </div>
+                    </div>
 
                 </div>
 
@@ -248,6 +247,5 @@ export class ManageQuestions extends React.Component<RouteComponentProps<IManage
 
     componentDidMount() {
         this.countAllQuestions(1);
-        //this.showAllQuestions();
     }
 }
